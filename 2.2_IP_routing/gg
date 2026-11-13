@@ -1,0 +1,77 @@
+import ssl
+import paho.mqtt.client as paho
+import paho.mqtt.publish as publish
+
+# Create two test messages
+msgs = [
+    {'topic': "my test", 'payload': "test 1"},
+    ("my test", "test 2", 0, False)
+]
+
+# Use TLS for a secure connection with EMQX Cloud
+sslSettings = ssl.create_default_context(
+    cafile="emqxsl-ca.crt"
+)
+
+# Enter your EMQX Cloud credentials
+auth = {
+    'username': "USERNAME",
+    'password': "PASSWORD"
+}
+
+# Publish both messages
+publish.multiple(
+    msgs,
+    hostname="HOSTNAME",
+    port=8883,
+    auth=auth,
+    tls=sslSettings,
+    protocol=paho.MQTTv311
+)
+
+print("Messages published successfully!")
+
+
+
+import ssl
+import paho.mqtt.client as paho
+import paho.mqtt.subscribe as subscribe
+
+# Callback function to print incoming messages
+def print_msg(client, userdata, message):
+    print(
+        "{} : {}".format(
+            message.topic,
+            message.payload.decode()
+        )
+    )
+
+# Use TLS for a secure connection with EMQX Cloud
+sslSettings = ssl.create_default_context(
+    cafile="emqxsl-ca.crt"
+)
+
+# Enter your EMQX Cloud credentials
+auth = {
+    'username': "USERNAME",
+    'password': "PASSWORD"
+}
+
+# Subscribe to the topic and exit cleanly on Ctrl+C
+try:
+    subscribe.callback(
+        print_msg,
+        "my test",
+        hostname="HOSTNAME",
+        port=8883,
+        auth=auth,
+        tls=sslSettings,
+        protocol=paho.MQTTv311
+    )
+except KeyboardInterrupt:
+    print("\nSubscriber stopped.")
+
+msgs = [
+    {'topic': "my test", 'payload': "Temperature: 22.5"},
+    {'topic': "my test", 'payload': "Humidity: 65%"}
+]
