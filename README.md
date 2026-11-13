@@ -156,3 +156,35 @@ Each subsection follows a consistent structure:
 - Check firewall settings if applicable
 
 
+import ssl
+import paho.mqtt.client as paho
+import paho.mqtt.publish as publish
+
+# Create two test messages
+msgs = [
+    {'topic': "my test", 'payload': "test 1"},
+    ("my test", "test 2", 0, False)
+]
+
+# Use TLS for a secure connection with EMQX Cloud
+sslSettings = ssl.create_default_context(
+    cafile="emqxsl-ca.crt"
+)
+
+# Enter your EMQX Cloud credentials
+auth = {
+    'username': "USERNAME",
+    'password': "PASSWORD"
+}
+
+# Publish both messages
+publish.multiple(
+    msgs,
+    hostname="HOSTNAME",
+    port=8883,
+    auth=auth,
+    tls=sslSettings,
+    protocol=paho.MQTTv311
+)
+
+print("Messages published successfully!")
