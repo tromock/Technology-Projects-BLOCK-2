@@ -75,3 +75,6 @@ msgs = [
     {'topic': "my test", 'payload': "Temperature: 22.5"},
     {'topic': "my test", 'payload': "Humidity: 65%"}
 ]
+
+
+r0f1f059.ala.eu-central-1.emqxsl.com
